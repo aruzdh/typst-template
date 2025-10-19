@@ -457,3 +457,22 @@
 }
 ).with(numbering(boxcounting)).with(numbering(boxcounting))
 
+#let remark = thmenv(
+"remark", boxcounting, none, (name, number, body, ..args) => {
+  showybox(
+    frame: (
+      thickness:0.5pt,
+      title-color:white,
+      border-color: black,
+      body-color: rgb("#ffffef"),
+      radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
+    ),
+    title-style: (
+      color: black,
+      boxed-style: (anchor: (x: left, y: horizon))
+    ),
+    [*_#get_translation(translated_terms.remark)._*] + body
+  )
+}
+).with(numbering(boxcounting)).with(numbering(boxcounting))
+
