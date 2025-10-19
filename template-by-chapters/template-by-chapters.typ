@@ -1,9 +1,9 @@
 #import "lib.typ": *
 
 #show: template.with(
-  title: [Template for Notes],
-  short_title: "A bunch of defs and theorems",
-  description: [Notes based on a regular cs course],
+  title: [Non-boring notes],
+  short_title: "Usual Notes",
+  description: [An usual description],
   date: datetime(year: 1999, month: 12, day: 31),
   authors: (
     (
