@@ -33,3 +33,26 @@
   ]
 ]
 
+// A nice horizontal line
+#let horizontalrule(color: gray, dashed: false) = {
+  line(
+    length: 100%,
+    stroke: (
+      paint: color,
+      thickness: 1pt,
+      dash: if dashed { ("dot", 2pt, 4pt, 2pt) } else { none }
+    )
+  )
+}
+
+// A math box command
+#let mathbox(content, higher: false) = {
+  box(
+    stroke: 0.5pt,
+    inset: (x: 2pt, y: 1pt),
+    outset: (x: 1pt, y: if higher { 8pt } else { 3pt }),
+    baseline: if higher { 6pt } else { 1pt },
+    if higher { $display(#content)$ } else { $#content$ }
+  )
+}
+
