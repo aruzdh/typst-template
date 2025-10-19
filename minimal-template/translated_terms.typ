@@ -1,3 +1,4 @@
+// This file provides a quick way to have common translated terms, based on the language set in the 'main.typ' file.
 #let get_translation(translations) = {
   if type(translations) != dictionary { return translations }
   return context {

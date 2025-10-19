@@ -1,6 +1,7 @@
 #import "./translated_terms.typ":*
 
-#let dem(body) = [
+// A minimal box to write a prove
+#let proof(body) = [
   #block(
     inset: (left: 2em),
     [
@@ -11,6 +12,7 @@
   )
 ]
 
+// Use it to have a good text format inside a 'underbrace' or 'overbrace' function.
 #let smash(body, side: center) = math.display(
   box(width: 0pt, align(
     side.inv(),
