@@ -1,4 +1,3 @@
-=
 // Imports
 // =============================================================
 #import "translated_terms.typ": *
@@ -289,8 +288,142 @@
 #let boxnumbering = "1.1.1.1.1.1"
 #let boxcounting = "heading"
 
-// General purpose boxes and rules
-#let blockquote(cite: none, body) = [
+#let horizontalrule(color: gray, dashed: false) = {
+  line(
+    length: 100%,
+    stroke: (
+      paint: color,
+      thickness: 1pt,
+      dash: if dashed { ("dot", 2pt, 4pt, 2pt) } else { none }
+    )
+  )
+}
+
+// A math box command
+#let mathbox(content, higher: false) = {
+  box(
+    stroke: 0.5pt,
+    inset: (x: 2pt, y: 1pt),
+    outset: (x: 1pt, y: if higher { 8pt } else { 3pt }),
+    baseline: if higher { 6pt } else { 1pt },
+    if higher { $display(#content)$ } else { $#content$ }
+  )
+}
+
+// --- Theorem-like Environments ---
+
+// General box
+#let box(
+  identifier, 
+  title, 
+  title-color: white, 
+  base-color, 
+  numbered: true,
+  breakable: true
+) = thmenv(
+  identifier, boxcounting, none, (name, number, body, ..args) => {
+    showybox(
+      breakable: breakable,
+      frame: (
+        border-color: base-color,
+        title-color: base-color.lighten(30%), 
+        body-color: base-color.lighten(95%), 
+        footer-color: base-color.lighten(80%), 
+        radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
+      ),
+      title-style: (
+        color: title-color,
+        boxed-style: (
+          anchor: (x: center, y: horizon), 
+          radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
+        )
+      ),
+      title: [
+        #title #if numbered { number } else {} *#name*
+      ],
+      ..args.named(),
+      body
+    )
+  }
+).with(numbering: boxnumbering)
+
+// Core logical structures
+#let theorem = box(
+  "theorem",
+  get_translation(translated_terms.theorem), 
+  navy
+)
+
+#let corollary = box(
+  "corollary",
+  get_translation(translated_terms.corollary), 
+  navy
+)
+
+#let lemma = box(
+  "lemma",
+  get_translation(translated_terms.lemma), 
+  fuchsia
+)
+
+#let proposition = box(
+  "proposition",
+  get_translation(translated_terms.proposition), 
+  maroon
+)
+
+#let hypothesis = box(
+  "hypothesis",
+  get_translation(translated_terms.hypothesis), 
+  maroon
+)
+
+#let definition = box(
+  "definition",
+  get_translation(translated_terms.definition), 
+  red,
+)
+
+#let example = box(
+  "example",
+  get_translation(translated_terms.example), 
+  orange
+)
+
+#let note = box(
+  "note",
+  get_translation(translated_terms.note), 
+  eastern
+)
+
+#let attention = box(
+  "attention",
+  get_translation(translated_terms.attention), 
+  rgb("#DC143C")
+)
+
+#let important = box(
+  "important",
+  get_translation(translated_terms.important), 
+  rgb("#DC143C")
+)
+
+#let exercise = box(
+  "exercise",
+  get_translation(translated_terms.exercise), 
+  olive
+)
+
+#let tip = box(
+  "tip",
+  get_translation(translated_terms.tip), 
+  title-color: black,
+  numbered: false,
+  yellow
+)
+
+// Miscellaneous
+#let quote(cite: none, body) = [
   #set text(size: 0.97em)
   #pad(left: 1.5em)[
     #block(
@@ -303,158 +436,6 @@
     )[#body]
   ]
 ]
-
-#let horizontalrule = {
-  v(1em)
-  line(start: (37%, 0%), end: (63%, 0%), stroke: 0.5pt)
-  v(1em)
-}
-
-#let sectionline = align(center)[#v(0.5em) * \* #sym.space.quad \* #sym.space.quad \* * #v(0.5em)]
-
-// LaTeX-style boxed math commands
-#let iboxed(content) = {
-  box(stroke: 0.5pt, outset: (x: 1pt, y: 3pt), inset: (x: 2pt, y: 1pt), baseline: 1pt, $#content$)
-}
-#let dboxed(content) = {
-  box(stroke: 0.5pt, outset: (x: 1pt, y: 8pt), inset: (x: 2pt, y: 1pt), baseline: 6pt, $display(#content)$)
-}
-
-// --- Theorem-like Environments ---
-
-// Core logical structures
-#let theorem = thmenv(
-  "theorem", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: navy, title-color: navy.lighten(30%), body-color: navy.lighten(95%), footer-color: navy.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.theorem) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let corollary = thmenv(
-  "corollary", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: navy, title-color: navy.lighten(30%), body-color: navy.lighten(95%), footer-color: navy.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.corollary) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let lemma = thmenv(
-  "lemma", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: fuchsia, title-color: fuchsia.lighten(30%), body-color: fuchsia.lighten(95%), footer-color: fuchsia.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.lemma) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let proposition = thmenv(
-  "proposition", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: maroon, title-color: maroon.lighten(30%), body-color: maroon.lighten(95%), footer-color: maroon.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.proposition) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let hypothesis = thmenv(
-  "hypothesis", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: maroon, title-color: maroon.lighten(30%), body-color: maroon.lighten(95%), footer-color: maroon.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.hypothesis) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let definition = thmenv(
-  "definition", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: red, title-color: red.lighten(30%), body-color: red.lighten(95%), footer-color: red.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.definition) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-// Explanatory elements
-#let example = thmenv(
-  "example", boxcounting, 0, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: orange, title-color: orange.lighten(30%), body-color: orange.lighten(95%), footer-color: orange.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.example) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let note = thmenv(
-  "note", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: eastern, title-color: eastern.lighten(30%), body-color: eastern.lighten(95%), footer-color: eastern.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.note) *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-// Attention-grabbing elements
-#let attention = thmenv(
-  "attention", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: rgb("#DC143C"), title-color: rgb("#DC143C").lighten(30%), body-color: rgb("#DC143C").lighten(95%), footer-color: rgb("DC143C").lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.attention) *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let important = thmenv(
-  "important", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: rgb("#DC143C"), title-color: rgb("#DC143C").lighten(30%), body-color: rgb("#DC143C").lighten(95%), footer-color: rgb("DC143C").lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.important) *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let exercise = thmenv(
-  "exercise", boxcounting, 0, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: olive, title-color: olive.lighten(30%), body-color: blue.lighten(95%), footer-color: olive.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.exercise) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-// Miscellaneous
-#let quote = thmenv(
-  "quote", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: black, title-color: black.lighten(30%), body-color: black.lighten(95%), footer-color: black.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.quote) #number *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
-
-#let tip = thmenv(
-  "tip", boxcounting, none, (name, number, body, ..args) => {
-    showybox(
-      frame: (border-color: yellow, title-color: yellow.lighten(30%), body-color: yellow.lighten(95%), footer-color: yellow.lighten(80%), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)),
-      title-style: (color: black, boxed-style: (anchor: (x: center, y: horizon), radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt))),
-      title: [#get_translation(translated_terms.tip) *#name*], ..args.named(), body
-    )
-  }
-).with(numbering: boxnumbering)
 
 #let proof = thmenv(
 "proof", boxcounting, none, (name, number, body, ..args) => {
@@ -472,25 +453,6 @@
       boxed-style: (anchor: (x: left, y: horizon))
     ),
     [*_#get_translation(translated_terms.proof)._*] + body + [#place(bottom + right, $qed$)]
-  )
-}
-).with(numbering(boxcounting)).with(numbering(boxcounting))
-
-#let remark = thmenv(
-"remak", boxcounting, none, (name, number, body, ..args) => {
-  showybox(
-    frame: (
-      thickness:0.5pt,
-      title-color:white,
-      border-color: black,
-      body-color: rgb("#ffffef"),
-      radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
-    ),
-    title-style: (
-      color: black,
-      boxed-style: (anchor: (x: left, y: horizon))
-    ),
-    [*_#get_translation(translated_terms.remark)._*] + body
   )
 }
 ).with(numbering(boxcounting)).with(numbering(boxcounting))
