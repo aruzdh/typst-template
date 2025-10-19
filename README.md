@@ -2,6 +2,8 @@
 
 This repository provides a collection of templates for taking notes using [Typst](https://typst.app/), a modern typesetting system. The templates are designed to be flexible and customizable for various note-taking needs, from simple assignments to complex.
 
+![An example of template-by-lectures](./example.jpg)
+
 ## Templates
 
 There are three main templates available:
