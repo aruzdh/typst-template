@@ -1,0 +1,10 @@
+# General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must be committed
+Icon
+
+# Thumbnails
+._*
