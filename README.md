@@ -20,7 +20,7 @@ A simple, barebones template suitable for basic notes, homework, or small docume
 
 A comprehensive template for notes organized by chapters and sections. This is ideal for a book, thesis, or a long-form course. The structure includes:
 
-- `template.typ`: The main file that sets up the document structure and styling.
+- `template-by-chapters.typ`: The main file that sets up the document structure and styling.
 - `lib.typ`: A powerful library file containing the core template logic, custom environments, and styling rules.
 - `chapters/`: A directory to store your chapter files.
 - `sections/`: A directory for sections within chapters.
@@ -30,7 +30,7 @@ A comprehensive template for notes organized by chapters and sections. This is i
 
 A template structured for course notes, organized by lectures or days, and grouped into weeks. This is perfect for students or educators. It features:
 
-- `template.typ`: The main document setup file.
+- `template-by-lectures.typ`: The main document setup file.
 - `lib.typ`: The same powerful library as the "By Chapters" template, providing extensive customization.
 - `weeks/`: A directory to group your notes by week.
 - `days/`: A directory for individual lecture or day notes.
