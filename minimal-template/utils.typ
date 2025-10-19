@@ -20,3 +20,16 @@
   )
 )
 
+// Make a title and subtitle
+#let maketitle(title, subtitle: "", position: center) = [
+  #align(position)[
+    #text(18pt)[
+      = #title
+    ]
+
+    #text(13pt, style: "italic")[
+      #subtitle
+    ]
+  ]
+]
+

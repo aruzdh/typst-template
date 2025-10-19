@@ -1,13 +1,6 @@
 #import "./utils.typ":*
 
-#align(center)[
-  #text(18pt)[
-    = Differential Equation Exercise
-  ]
-  #text(13pt)[
-    An introductory example
-  ]
-]
+#maketitle("Differential Equation Exercise", subtitle: "An introductory example")
 
 First of all, remember that:
 // Without using the 'smash' function.
@@ -17,7 +10,7 @@ First of all, remember that:
 
 $
 (dif overbrace(y, smash("dependent variable"))) /
-(dif underbrace(x, smash("independent variable"))) = 5 x y,
+(dif underbrace(x, smash("independent variable"))) = 5 x y
 $
 
 Solve the following exercise:
