@@ -1,9 +1,9 @@
 #import "lib.typ": *
 
 #show: template.with(
-  title: [Usual Notes],
+  title: [A non-boring notes],
   short_title: "Usual Notes",
-  description: [Usual description],
+  description: [An usual description],
   date: datetime(year: 2025, month: 08, day: 11),
   authors: (
     (
