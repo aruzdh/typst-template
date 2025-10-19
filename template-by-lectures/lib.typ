@@ -1,8 +1,12 @@
+// Imports
+// =============================================================
 #import "translated_terms.typ": *
 #import "@preview/showybox:2.0.3": showybox
 #import "@preview/ctheorems:1.1.3": thmenv, thmrules
 
-// --- Template ---
+// =============================================================
+// Template
+// =============================================================
 #let template(
   // Metadata
   title: "Lecture Notes Title",
@@ -276,8 +280,9 @@
   }
 }
 
-
-// --- Boxes, Rules, and Environments ---
+// =============================================================
+// Boxes, Rules, and Environments
+// =============================================================
 
 // Default numbering settings for theorem environments
 #let boxnumbering = "1.1.1.1.1.1"
