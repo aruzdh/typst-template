@@ -1,29 +1,24 @@
 #!/usr/bin/env zsh
 
 # This script creates a new Typst project directory structure.
-# It expects a template directory named 'template' in the same location.
 #
 # Usage: ./create_typst_project.zsh <new_project_name>
 # Example: ./create_typst_project.zsh linear-algebra
 
-readonly TEMPLATE_BY_LECTURES="template-by-lectures"
-readonly TEMPLATE_BY_CHAPTERS="template-by-chapters"
+readonly FULL_TEMPLATE="full-template"
 readonly MINIMAL_TEMPLATE="minimal-template"
 
 new_dir_name="$1"
 
-echo "Notes by"
-echo "(0) - Lectures"
-echo "(1) - Chapters"
-echo "(2) - Minimal"
+echo "Structure: "
+echo "(0) - By Lectures (full)"
+echo "(1) - Minimal"
 echo -n "\nChoose a format: "
 read format
 
 if ((format == 0)); then
-  template_dir=$TEMPLATE_BY_LECTURES
+  template_dir=$FULL_TEMPLATE
 elif ((format == 1)); then
-  template_dir=$TEMPLATE_BY_CHAPTERS
-elif ((format == 2)); then
   template_dir=$MINIMAL_TEMPLATE
 else
   echo "Invalid format selected. Defaulting to Minimal."
@@ -45,7 +40,7 @@ fi
 if [ ! -d "$template_dir" ]; then
   echo "Error: Template directory '$template_dir' not found."
   echo "Please ensure a directory named '$template_dir' exists"
-  echo "in the same location as this script, containing your 'template.typ'."
+  echo "in the same location as this script."
   exit 1
 fi
 
@@ -56,7 +51,7 @@ echo "Creating new project directory: '$new_dir_name'..."
 mkdir "$new_dir_name"
 
 # Copy the content of the template directory to the new directory
-# This assumes 'template' contains 'template.typ' and any other common files
+# This assumes the template contains '<template>.typ' and any other common files
 echo "Copying template content from '$template_dir' to '$new_dir_name'..."
 cp -r "$template_dir"/* "$new_dir_name"
 
@@ -66,7 +61,7 @@ if [ -f "$new_dir_name/template.typ" ]; then
   echo "Renaming template.typ to $main_typ_file..."
   mv "$new_dir_name/template.typ" "$main_typ_file"
 else
-  echo "Warning: 'template.typ' not found in '$template_dir'. No main Typst file renamed."
+  echo "Warning: '<template>.typ' not found in '$template_dir'. No main Typst file renamed."
 fi
 
 # Create the .typst_main_file and write the new main Typst file name into it

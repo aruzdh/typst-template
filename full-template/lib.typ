@@ -14,53 +14,39 @@
   authors: (),
   description: none,
   date: none,
-
   // Document Layout
   paper_size: "a4",
-  paper_color: "#ffffef",
+  paper_color: "#ffffff",
   landscape: false,
   cols: 1,
   paragraph_indent: 1em,
-
   // Fonts & Language
   text_font: "STIXTwoText",
   code_font: "Iosevka",
   math_font: "STIX Two Math",
   text_lang: "en",
-
   // Numbering & References
   heading_numbering: "1.1",
   h1-prefix: "lecture",
   math_equation_numbering: none,
   bibliography_file: none,
   bibstyle: "apa",
-
   // Styling
-  accent: "#DC143C",
+  accent: "#262626",
   colortab: false,
-
   // Table of Contents & Lists
   lof: false,
   lot: false,
   lol: false,
-
-  body
+  body,
 ) = {
   // ====================
   // Initial Setup
   // ====================
   show: thmrules
 
-  // Determine the accent color, ensuring it's a Typst color object
-  let accent_color = {
-    if type(accent) == str {
-      rgb(accent)
-    } else if type(accent) == "color" {
-      accent
-    } else {
-      rgb("#DC143C") // Default accent
-    }
-  }
+  // Determine the accent color
+  let accent_color = rgb(accent)
 
   // Construct a string title from the title content for metadata
   let str_title = ""
@@ -101,34 +87,32 @@
       } else {
         let current_heading = elems.last()
         // Display title on left, current heading on right
-        head_title + h(1fr) + emph(
-          if current_heading.numbering != none {
-            get_translation(translated_terms.at(h1-prefix)) + " " + counter(heading.where(level: 1)).display("1: ") + current_heading.body
-          } else {
-            current_heading.body
-          }
+        (
+          head_title
+            + h(1fr)
+            + emph(
+              if current_heading.numbering != none {
+                (
+                  get_translation(translated_terms.at(h1-prefix))
+                    + " "
+                    + counter(heading.where(level: 1)).display("1: ")
+                    + current_heading.body
+                )
+              } else {
+                current_heading.body
+              },
+            )
         )
         v(-6pt) // Adjust vertical position for the line
         line(length: 100%, stroke: (thickness: 1pt, paint: accent_color, dash: "solid"))
       }
     },
-    // Optional background color tab
-    background: if colortab {
-      place(
-        top + right,
-        rect(
-          fill: gradient.linear(angle: 45deg, white, accent_color),
-          width: 100%,
-          height: 1em
-        )
-      )
-    } else { none }
   )
 
   // Set fonts, language, and paragraph style
   set text(font: text_font, size: 10pt, lang: text_lang)
   set par(justify: true, linebreaks: "optimized", leading: 1em, first-line-indent: paragraph_indent)
-  
+
   // Set numbering formats
   set heading(numbering: heading_numbering)
   set math.equation(numbering: math_equation_numbering)
@@ -148,18 +132,16 @@
   }
 
   // Configure level 1 heading numbering format
-  show selector(heading.where(level: 1)): set heading(numbering:
-    (..nums) => get_translation(translated_terms.at(h1-prefix))
-      + " " + nums.pos().map(str).join(".") + ":"
-  )
+  show selector(heading.where(level: 1)): set heading(numbering: (..nums) => (
+    get_translation(translated_terms.at(h1-prefix)) + " " + nums.pos().map(str).join(".") + ":"
+  ))
 
   // Disable numbering for specific major headings (e.g., Contents, References)
   show selector(heading.where(body: [#get_translation(translated_terms.contents)]))
     .or(heading.where(body: [#get_translation(translated_terms.lof)]))
     .or(heading.where(body: [#get_translation(translated_terms.lot)]))
     .or(heading.where(body: [#get_translation(translated_terms.lol)]))
-    .or(heading.where(body: [#get_translation(translated_terms.references)])
-  ): set heading(numbering: none)
+    .or(heading.where(body: [#get_translation(translated_terms.references)])): set heading(numbering: none)
 
   // Style math equations and fonts
   show math.equation: set text(font: math_font)
@@ -216,29 +198,46 @@
 
   if authors.len() > 0 {
     align(center, box(inset: (y: 10pt), {
-      authors.map(author => {
-        text(11pt, weight: "semibold")[
-          #if "link" in author {
-            link(author.link)[#author.name]
-          } else { author.name }
-        ]
-      }).join(", ", last: if authors.len() > 2 { ", and" } else { " and" })
+      authors
+        .map(author => {
+          text(11pt, weight: "semibold")[
+            #if "link" in author {
+              link(author.link)[#author.name]
+            } else { author.name }
+          ]
+        })
+        .join(", ", last: if authors.len() > 2 { ", and" } else { " and" })
     }))
   }
   v(6pt, weak: true)
 
   if date != none {
     align(center, table(
-      columns: (auto, auto), stroke: none, gutter: 0pt, align: (right, left),
+      columns: (auto, auto),
+      stroke: none,
+      gutter: 0pt,
+      align: (right, left),
       [#text(size: 11pt, get_translation(translated_terms.created) + ":")],
       [#text(size: 11pt, fill: accent_color, weight: "semibold", date.display("[month] / [day] / [year repr:full]"))],
+
       [#text(size: 11pt, get_translation(translated_terms.last_updated) + ":")],
-      [#text(size: 11pt, fill: accent_color, weight: "semibold", datetime.today().display("[month] / [day] / [year repr:full]"))],
+      [#text(
+        size: 11pt,
+        fill: accent_color,
+        weight: "semibold",
+        datetime.today().display("[month] / [day] / [year repr:full]"),
+      )],
     ))
   } else {
-    align(center,
-      text(size: 11pt)[Last updated:#h(5pt)] +
-      text(size: 11pt, fill: accent_color, weight: "semibold", datetime.today().display("[month] / [day] / [year repr:full]"))
+    align(
+      center,
+      text(size: 11pt)[Last updated:#h(5pt)]
+        + text(
+          size: 11pt,
+          fill: accent_color,
+          weight: "semibold",
+          datetime.today().display("[month] / [day] / [year repr:full]"),
+        ),
     )
   }
   v(18pt, weak: true)
@@ -294,8 +293,8 @@
     stroke: (
       paint: color,
       thickness: 1pt,
-      dash: if dashed { ("dot", 2pt, 4pt, 2pt) } else { none }
-    )
+      dash: if dashed { ("dot", 2pt, 4pt, 2pt) } else { none },
+    ),
   )
 }
 
@@ -306,7 +305,7 @@
     inset: (x: 2pt, y: 1pt),
     outset: (x: 1pt, y: if higher { 8pt } else { 3pt }),
     baseline: if higher { 6pt } else { 1pt },
-    if higher { $display(#content)$ } else { $#content$ }
+    if higher { $display(#content)$ } else { $#content$ },
   )
 }
 
@@ -314,112 +313,115 @@
 
 // General box
 #let box(
-  identifier, 
-  title, 
-  title-color: white, 
-  base-color, 
+  identifier,
+  title,
+  title-color: white,
+  base-color,
   numbered: true,
-  breakable: true
+  breakable: true,
 ) = thmenv(
-  identifier, boxcounting, none, (name, number, body, ..args) => {
+  identifier,
+  boxcounting,
+  none,
+  (name, number, body, ..args) => {
     showybox(
       breakable: breakable,
       frame: (
         border-color: base-color,
-        title-color: base-color.lighten(30%), 
-        body-color: base-color.lighten(95%), 
-        footer-color: base-color.lighten(80%), 
-        radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
+        title-color: base-color.lighten(30%),
+        body-color: base-color.lighten(95%),
+        footer-color: base-color.lighten(80%),
+        radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt),
       ),
       title-style: (
         color: title-color,
         boxed-style: (
-          anchor: (x: center, y: horizon), 
-          radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
-        )
+          anchor: (x: center, y: horizon),
+          radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt),
+        ),
       ),
       title: [
         #title #if numbered { number } else {} *#name*
       ],
       ..args.named(),
-      body
+      body,
     )
-  }
+  },
 ).with(numbering: boxnumbering)
 
 // Core logical structures
 #let theorem = box(
   "theorem",
-  get_translation(translated_terms.theorem), 
-  navy
+  get_translation(translated_terms.theorem),
+  black,
 )
 
 #let corollary = box(
   "corollary",
-  get_translation(translated_terms.corollary), 
-  navy
+  get_translation(translated_terms.corollary),
+  black,
 )
 
 #let lemma = box(
   "lemma",
-  get_translation(translated_terms.lemma), 
-  fuchsia
+  get_translation(translated_terms.lemma),
+  black,
 )
 
 #let proposition = box(
   "proposition",
-  get_translation(translated_terms.proposition), 
-  maroon
+  get_translation(translated_terms.proposition),
+  black,
 )
 
 #let hypothesis = box(
   "hypothesis",
-  get_translation(translated_terms.hypothesis), 
-  maroon
+  get_translation(translated_terms.hypothesis),
+  black,
 )
 
 #let definition = box(
   "definition",
-  get_translation(translated_terms.definition), 
-  red,
+  get_translation(translated_terms.definition),
+  black,
 )
 
 #let example = box(
   "example",
-  get_translation(translated_terms.example), 
-  orange
+  get_translation(translated_terms.example),
+  black,
 )
 
 #let note = box(
   "note",
-  get_translation(translated_terms.note), 
-  eastern
+  get_translation(translated_terms.note),
+  black,
 )
 
 #let attention = box(
   "attention",
-  get_translation(translated_terms.attention), 
-  rgb("#DC143C")
+  get_translation(translated_terms.attention),
+  rgb("#DC0000"),
 )
 
 #let important = box(
   "important",
-  get_translation(translated_terms.important), 
-  rgb("#DC143C")
+  get_translation(translated_terms.important),
+  rgb("#DC0000"),
 )
 
 #let exercise = box(
   "exercise",
-  get_translation(translated_terms.exercise), 
-  olive
+  get_translation(translated_terms.exercise),
+  black,
 )
 
 #let tip = box(
   "tip",
-  get_translation(translated_terms.tip), 
+  get_translation(translated_terms.tip),
   title-color: black,
   numbered: false,
-  yellow
+  rgb("#DC9900"),
 )
 
 // Miscellaneous
@@ -432,47 +434,61 @@
       fill: gray.lighten(90%),
       radius: (left: 0pt, right: 5pt),
       stroke: (left: 5pt + gray, rest: 1pt + silver),
-      inset: 1em
+      inset: 1em,
     )[#body]
   ]
 ]
 
-#let proof = thmenv(
-"proof", boxcounting, none, (name, number, body, ..args) => {
-  showybox(
-    frame: (
-      dash: "dashed",
-      thickness:0.5pt,
-      title-color:white,
-      border-color: black,
-      body-color: rgb("#ffffef"),
-      radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
-    ),
-    title-style: (
-      color: black,
-      boxed-style: (anchor: (x: left, y: horizon))
-    ),
-    [*_#get_translation(translated_terms.proof)._*] + body + [#place(bottom + right, $qed$)]
+#let proof = (
+  thmenv(
+    "proof",
+    boxcounting,
+    none,
+    (name, number, body, ..args) => {
+      showybox(
+        frame: (
+          thickness: 0.5pt,
+          title-color: white,
+          border-color: black,
+          body-color: rgb("#ffffff"),
+          radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt),
+        ),
+        title-style: (
+          color: black,
+          boxed-style: (anchor: (x: left, y: horizon)),
+        ),
+        [*_#get_translation(translated_terms.proof)._*] + body + [#place(bottom + right, $qed$)],
+      )
+    },
   )
-}
-).with(numbering(boxcounting)).with(numbering(boxcounting))
+    .with(numbering(boxcounting))
+    .with(numbering(boxcounting))
+)
 
-#let remark = thmenv(
-"remark", boxcounting, none, (name, number, body, ..args) => {
-  showybox(
-    frame: (
-      thickness:0.5pt,
-      title-color:white,
-      border-color: black,
-      body-color: rgb("#ffffef"),
-      radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt)
-    ),
-    title-style: (
-      color: black,
-      boxed-style: (anchor: (x: left, y: horizon))
-    ),
-    [*_#get_translation(translated_terms.remark)._*] + body
+#let remark = (
+  thmenv(
+    "remark",
+    boxcounting,
+    none,
+    (name, number, body, ..args) => {
+      showybox(
+        frame: (
+          dash: "dashed",
+          thickness: 0.5pt,
+          title-color: white,
+          border-color: black,
+          body-color: rgb("#ffffff"),
+          radius: (top-left: 10pt, bottom-right: 10pt, rest: 0pt),
+        ),
+        title-style: (
+          color: black,
+          boxed-style: (anchor: (x: left, y: horizon)),
+        ),
+        [*_#get_translation(translated_terms.remark)._*] + body,
+      )
+    },
   )
-}
-).with(numbering(boxcounting)).with(numbering(boxcounting))
+    .with(numbering(boxcounting))
+    .with(numbering(boxcounting))
+)
 

@@ -1,4 +1,4 @@
-#import "./utils.typ":*
+#import "./utils.typ": *
 
 #maketitle("Differential Equation Exercise", subtitle: "An introductory example")
 
@@ -9,14 +9,14 @@ First of all, remember that:
 // $
 
 $
-(dif overbrace(y, smash("dependent variable"))) /
-(dif underbrace(x, smash("independent variable"))) = 5 x y
+  (dif overbrace(y, smash("dependent variable"))) /
+  (dif underbrace(x, smash("independent variable"))) = 5 x y
 $
 
 Solve the following exercise:
 $
-(1 + t^2) (dif y)/(dif t) + 4 t y = t; 
-space.quad space.quad
-y(1) = 1/4
+  (1 + t^2) (dif y)/(dif t) + 4 t y = t;
+  space.quad space.quad
+  y(1) = 1/4
 $
 

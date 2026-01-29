@@ -16,7 +16,7 @@
   cols: 1,
   h1-prefix: "lecture", // chapter or lecture
   text_lang: "en",
-  accent: orange,
+  accent: "#282828",
   colortab: true,
 )
 
